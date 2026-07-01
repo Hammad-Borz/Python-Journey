@@ -11,3 +11,13 @@ print(a == b)
 print(a != b)
 print(a > b)
 print(a < b)
+print((a > b) and (b < a))
+print((a > b) or (a < b))
+print(not (a > b))
+x = 10
+x += 5
+print(x)
+x *= 5
+print(x)
+y = 2 + 3 * 4 ** 2
+print(y)

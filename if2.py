@@ -1,0 +1,9 @@
+a = 8
+b = 2
+print(a / b)
+c = -9
+d = 4
+print(c // d)
+x = 7.0
+y = 3
+print(x // y)

@@ -8,5 +8,5 @@ print(x)
 d = 77
 A = str(d)
 print(A)
-print("A: " + str(d))
-print(int("Hello"))
+z = "Hello"
+print(int(z))

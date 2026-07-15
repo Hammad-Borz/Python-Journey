@@ -11,4 +11,4 @@ print(random.randint(1, 8))  # Output: Random integer between 1 and 8
 print(random.choice(["apple", "banana", "cherry"]))  # Output: Random choice from the list
 countries = ["portugal", "spain", "france"]
 random.shuffle(countries)
-print(countries)  # Output: Shuffled list of countries
+print(countries)

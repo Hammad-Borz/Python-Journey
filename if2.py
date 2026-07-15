@@ -4,6 +4,6 @@ print(a / b)
 c = -9
 d = 4
 print(c // d)
-x = 7.0
+x = 7
 y = 3
 print(x // y)

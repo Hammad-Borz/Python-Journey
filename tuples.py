@@ -1,0 +1,5 @@
+countries = ("Portugal", "Spain", "France", "Italy")
+print(countries[0])
+print(countries[3])
+countries.remove("Poland")
+print(countries)

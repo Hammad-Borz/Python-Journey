@@ -35,7 +35,7 @@ while True:
                 Found = True
         if not Found:
             print("No matching note found.")
-            input("\nPress Enter to continue...")
+        input("\nPress Enter to continue...")
     elif choice == "4":
         print("You choose Delete Note")
         delete_note = input("Enter the exact note to delete: ")
@@ -46,13 +46,13 @@ while True:
             for line in notes:
                if line.strip().lower() != delete_note.lower():
                     file.write(line)
-            else:
+               else:
                 found = True
         if found:
              print("Note deleted successfully.")
         else:
             print("Note not found.")
-            input("\nPress Enter to continue...")
+        input("\nPress Enter to continue...")
     elif choice == "5":
         print("Thank You For Using Smart Note Tool")
         break

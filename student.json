@@ -1,0 +1,11 @@
+{
+    "student": {
+        "name": "BORZ",
+        "age": 18
+    },
+    "skills": [
+        "Python",
+        "AI",
+        "Automation"
+    ]
+}

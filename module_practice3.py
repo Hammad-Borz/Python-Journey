@@ -16,3 +16,6 @@ from datetime import datetime
 print(datetime.now())
 from math import sqrt
 print(sqrt(225))
+import math as m
+print(dir(m))
+print(help(m))

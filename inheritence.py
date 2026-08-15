@@ -7,6 +7,6 @@ class Animal:
 class Dog(Animal):
     def bark(self):
         print("Dogs bark.")
-dog = Dog()
+dog = Dog("Buddy")
 dog.eat()
 dog.bark()

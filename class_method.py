@@ -3,7 +3,7 @@ class Employee:
     @classmethod
     def change_company(cls, new_company):
         cls.company = new_company
-    def __init__(self, name, company):
+    def __init__(self, name):
         self.name = name
 employee1 = Employee("Starc", "Global Tech")
 employee2 = Employee("Smith", "Gloabl Tech")

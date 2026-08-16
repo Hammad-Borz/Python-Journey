@@ -1,0 +1,1 @@
+The data provides two GitHub API endpoints: one for retrieving **user information** (`user_url`), and another for **searching repositories** (`repository_search`) which supports a query and optional parameters for pagination and sorting.

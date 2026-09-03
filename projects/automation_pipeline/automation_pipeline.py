@@ -3,8 +3,8 @@ from dotenv import load_dotenv
 import os
 from google import genai
 
-# Load existing Gemini API key
-load_dotenv("chat_with_docs/.env")
+# Load Gemini API key from this project's .env file
+load_dotenv()
 
 api_key = os.getenv("GEMINI_API_KEY")
 

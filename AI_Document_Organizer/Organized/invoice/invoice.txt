@@ -1,0 +1,5 @@
+Invoice #1045
+Client: ABC Solutions
+Amount due: $750
+Payment deadline: August 20, 2026.
+Status: Unpaid.

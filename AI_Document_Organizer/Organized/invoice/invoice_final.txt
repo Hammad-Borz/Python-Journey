@@ -1,0 +1,5 @@
+Invoice #2026-108
+Client: TechNova Solutions
+Amount due: $1450
+Payment deadline: September 15, 2026.
+Status: Unpaid.

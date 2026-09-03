@@ -1,0 +1,5 @@
+Job Opportunity
+
+A company is looking for a Python and AI Automation developer.
+The work involves building API integrations, workflow automations, and AI-powered tools.
+This is a remote position.

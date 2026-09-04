@@ -1,60 +1,71 @@
-import os
+from pathlib import Path
 
 
 class AIAssistant:
-    def __init__(self):
+    """A menu-driven assistant with calculator and text-file utilities."""
+
+    def __init__(self, filename="note1.txt"):
+        self.file_path = Path(__file__).parent / filename
         print("🤖 AI Assistant is Ready!")
 
     def calculator(self):
-        num1 = float(input("Enter first number: "))
-        operator = input("Enter operator (+, -, *, /): ")
-        num2 = float(input("Enter second number: "))
+        try:
+            num1 = float(input("Enter first number: "))
+            operator = input("Enter operator (+, -, *, /): ").strip()
+            num2 = float(input("Enter second number: "))
+        except ValueError:
+            print("Please enter valid numbers.")
+            return
 
-        if operator == "+":
-            print("Result:", num1 + num2)
+        operations = {
+            "+": lambda a, b: a + b,
+            "-": lambda a, b: a - b,
+            "*": lambda a, b: a * b,
+        }
 
-        elif operator == "-":
-            print("Result:", num1 - num2)
-
-        elif operator == "*":
-            print("Result:", num1 * num2)
-
-        elif operator == "/":
-            if num2 != 0:
-                print("Result:", num1 / num2)
-            else:
+        if operator == "/":
+            if num2 == 0:
                 print("Cannot divide by zero.")
+                return
+            result = num1 / num2
+        elif operator in operations:
+            result = operations[operator](num1, num2)
         else:
             print("Invalid operator.")
+            return
+
+        print("Result:", result)
 
     def read_file(self):
-        filename = "note1.txt"
+        if not self.file_path.exists():
+            print("File not found.")
+            return
 
-        if os.path.exists(filename):
-            with open(filename, "r") as file:
-                text = file.read()
-
+        try:
+            text = self.file_path.read_text(encoding="utf-8")
             print("\n📄 File Content:\n")
             print(text)
-
-        else:
-            print("File not found.")
+        except OSError as error:
+            print(f"File error: {error}")
 
     def count_words(self):
-        filename = "note1.txt"
-
-        if os.path.exists(filename):
-            with open(filename, "r") as file:
-                text = file.read()
-
-            words = text.split()
-
-            print(f"\n📊 Total Words: {len(words)}")
-
-        else:
+        if not self.file_path.exists():
             print("File not found.")
+            return
+
+        try:
+            word_count = len(self.file_path.read_text(encoding="utf-8").split())
+            print(f"\n📊 Total Words: {word_count}")
+        except OSError as error:
+            print(f"File error: {error}")
 
     def start(self):
+        actions = {
+            "1": self.calculator,
+            "2": self.read_file,
+            "3": self.count_words,
+        }
+
         while True:
             print("\n========== AI Assistant ==========")
             print("1. Calculator")
@@ -62,24 +73,18 @@ class AIAssistant:
             print("3. Count Words")
             print("4. Exit")
 
-            choice = input("Choose an option (1-4): ")
+            choice = input("Choose an option (1-4): ").strip()
 
-            if choice == "1":
-                self.calculator()
-
-            elif choice == "2":
-                self.read_file()
-
-            elif choice == "3":
-                self.count_words()
-
-            elif choice == "4":
+            if choice == "4":
                 print("👋 Goodbye!")
                 break
 
+            action = actions.get(choice)
+            if action:
+                action()
             else:
                 print("❌ Invalid choice. Try again.")
 
 
-assistant = AIAssistant()
-assistant.start()
+if __name__ == "__main__":
+    AIAssistant().start()

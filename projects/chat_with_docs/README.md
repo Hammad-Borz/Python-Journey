@@ -15,6 +15,11 @@ The current implementation:
 7. Sends the retrieved context to Gemini.
 8. Generates an answer using the retrieved context.
 
+## 🐍 Requirements
+
+- Python 3.10 or newer
+- A Google Gemini API key
+
 ## 🏗️ Workflow
 
 ```text
@@ -53,19 +58,43 @@ Answer
 ```text
 chat_with_docs/
 ├── documents/
+├── .env.example
 ├── main.py
+├── requirements.txt
 └── README.md
 ```
 
-## ⚙️ Configuration
+## ⚙️ Installation
 
-The script expects a Gemini API key in an environment variable named `GEMINI_API_KEY`.
+```bash
+python -m venv .venv
+```
 
-Never commit API keys or other secrets to the repository.
+Activate the virtual environment and install dependencies:
 
-## 🚀 Current Scope
+```bash
+pip install -r requirements.txt
+```
 
-This is a learning-stage RAG implementation. It is intentionally simple and provides a foundation for later improvements such as better chunking, metadata, persistent vector storage, multiple document formats, retrieval evaluation, and a user-facing interface.
+## 🔐 Configuration
+
+Copy `.env.example` to `.env` and add your Gemini API key:
+
+```text
+GEMINI_API_KEY=your_real_api_key
+```
+
+Never commit `.env` or real API keys to GitHub.
+
+## 🚀 How to Run
+
+```bash
+python main.py
+```
+
+## 📌 Current Scope
+
+This is a learning-stage RAG implementation with intentionally simple retrieval and document handling.
 
 ## 👤 Author
 

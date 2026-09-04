@@ -1,90 +1,42 @@
-from pathlib import Path
-from dotenv import load_dotenv
-import os
-from google import genai
-import shutil
 import logging
+import os
+import shutil
+from pathlib import Path
 
+from dotenv import load_dotenv
+from google import genai
+
+BASE_DIR = Path(__file__).resolve().parent
+INPUT_FOLDER = BASE_DIR / "Input"
+ORGANIZED_FOLDER = BASE_DIR / "Organized"
+LOG_FILE = BASE_DIR / "document_organizer.log"
+ENV_FILE = BASE_DIR.parent / "chat_with_docs" / ".env"
+
+ALLOWED_CATEGORIES = {"invoice", "job", "meeting"}
+ALLOWED_EXTENSIONS = {".txt"}
+MODEL_NAME = "gemini-2.5-flash"
 
 logging.basicConfig(
-    filename="document_organizer.log",
+    filename=LOG_FILE,
     level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
 
-Input_folder = Path("Input")
-Organized_folder = Path("Organized")
+def get_client():
+    """Load the Gemini API key and create an AI client."""
+    load_dotenv(ENV_FILE)
+    api_key = os.getenv("GEMINI_API_KEY")
 
-allowed_categories = {"invoice", "job", "meeting"}
-allowed_extensions = {".txt"}
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY was not found in the environment.")
 
-
-files = list(Input_folder.iterdir())
-
-
-if not files:
-    print("No files found in Input.")
-    logging.info("No files found in Input.")
+    return genai.Client(api_key=api_key)
 
 
-load_dotenv("../chat_with_docs/.env")
-
-api_key = os.getenv("GEMINI_API_KEY")
-
-client = genai.Client(api_key=api_key)
-
-
-for file in files:
-
-    if not file.is_file():
-        print("SKIPPED NON-FILE:", file.name)
-
-        logging.warning(
-            f"Skipped non-file item: {file}"
-        )
-
-        continue
-
-
-    if file.suffix.lower() not in allowed_extensions:
-        print("SKIPPED UNSUPPORTED FILE:", file.name)
-
-        logging.warning(
-            f"Skipped unsupported file: {file.name}"
-        )
-
-        continue
-
-
-    print("\nPROCESSING:", file.name)
-
-    logging.info(
-        f"Processing file: {file.name}"
-    )
-
-
-    try:
-        content = file.read_text(
-            encoding="utf-8"
-        )
-
-    except Exception as error:
-
-        print(
-            "READ ERROR:",
-            error
-        )
-
-        logging.error(
-            f"Read error for {file.name}: {error}"
-        )
-
-        continue
-
-
-    prompt = f"""
-Classify this document into exactly one category:
+def classify_document(client, content: str) -> str:
+    """Classify document content into one supported category."""
+    prompt = f"""Classify this document into exactly one category:
 invoice, job, or meeting.
 
 Document:
@@ -93,112 +45,84 @@ Document:
 Return only the category name.
 """
 
+    response = client.models.generate_content(
+        model=MODEL_NAME,
+        contents=prompt,
+    )
+    return response.text.strip().lower()
+
+
+def process_file(client, file: Path) -> None:
+    """Read, classify, and move one supported document."""
+    if not file.is_file():
+        logging.warning("Skipped non-file item: %s", file)
+        return
+
+    if file.suffix.lower() not in ALLOWED_EXTENSIONS:
+        print("SKIPPED UNSUPPORTED FILE:", file.name)
+        logging.warning("Skipped unsupported file: %s", file.name)
+        return
+
+    print("\nPROCESSING:", file.name)
+    logging.info("Processing file: %s", file.name)
 
     try:
+        content = file.read_text(encoding="utf-8")
+    except OSError as error:
+        print("READ ERROR:", error)
+        logging.error("Read error for %s: %s", file.name, error)
+        return
 
-        ai_response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt
-        )
-
-        category = (
-            ai_response.text
-            .strip()
-            .lower()
-        )
-
-
+    try:
+        category = classify_document(client, content)
     except Exception as error:
+        print("AI ERROR:", error)
+        logging.error("AI error while processing %s: %s", file.name, error)
+        return
 
-        print(
-            "AI ERROR:",
-            error
-        )
+    if category not in ALLOWED_CATEGORIES:
+        print("INVALID CATEGORY:", category)
+        logging.error("Invalid category for %s: %s", file.name, category)
+        return
 
-        logging.error(
-            f"AI error while processing {file.name}: {error}"
-        )
-
-        continue
-
-
-    if category not in allowed_categories:
-
-        print(
-            "INVALID CATEGORY:",
-            category
-        )
-
-        logging.error(
-            f"Invalid category for {file.name}: {category}"
-        )
-
-        continue
-
-
-    logging.info(
-        f"AI category for {file.name}: {category}"
-    )
-
-
-    print(
-        "CATEGORY:",
-        category
-    )
-
-
-    category_folder = (
-        Organized_folder / category
-    )
-
-
-    category_folder.mkdir(
-        parents=True,
-        exist_ok=True
-    )
-
-
-    destination = (
-        category_folder / file.name
-    )
-
+    destination_folder = ORGANIZED_FOLDER / category
+    destination_folder.mkdir(parents=True, exist_ok=True)
+    destination = destination_folder / file.name
 
     if destination.exists():
+        print("DUPLICATE FILE:", file.name)
+        logging.warning("Duplicate file skipped: %s", file.name)
+        return
 
-        print(
-            "DUPLICATE FILE:",
-            file.name
-        )
+    try:
+        shutil.move(str(file), str(destination))
+        print("MOVED:", file.name)
+        logging.info("Moved %s to %s", file.name, destination)
+    except OSError as error:
+        print("MOVE ERROR:", error)
+        logging.error("Move error for %s: %s", file.name, error)
 
-        logging.warning(
-            f"Duplicate file skipped: {file.name}"
-        )
 
-    else:
+def main() -> None:
+    """Process all supported documents in the input directory."""
+    INPUT_FOLDER.mkdir(exist_ok=True)
+    files = list(INPUT_FOLDER.iterdir())
 
-        try:
+    if not files:
+        print("No files found in Input.")
+        logging.info("No files found in Input.")
+        return
 
-            shutil.move(
-                str(file),
-                str(destination)
-            )
+    try:
+        client = get_client()
+    except RuntimeError as error:
+        print("CONFIGURATION ERROR:", error)
+        logging.error("Configuration error: %s", error)
+        return
 
-            logging.info(
-                f"Moved {file.name} to {destination}"
-            )
+    for file in files:
+        process_file(client, file)
 
-            print(
-                "MOVED:",
-                file.name
-            )
 
-        except Exception as error:
-
-            print(
-                "MOVE ERROR:",
-                error
-            )
-
-            logging.error(
-                f"Move error for {file.name}: {error}"
-            )
+if __name__ == "__main__":
+    main()

@@ -2,6 +2,11 @@
 
 A menu-driven Python application for storing, viewing, searching, and deleting notes from a text file.
 
+## 🐍 Requirements
+
+- Python 3.10 or newer
+- No external packages required
+
 ## ✨ Features
 
 - Add new notes
@@ -24,8 +29,17 @@ A menu-driven Python application for storing, viewing, searching, and deleting n
 smart_note_tool/
 ├── smart_note_tool.py
 ├── note.txt
+├── requirements.txt
 └── README.md
 ```
+
+## ⚙️ Installation
+
+```bash
+python -m venv .venv
+```
+
+No third-party dependencies need to be installed.
 
 ## 🚀 How to Run
 
@@ -37,18 +51,7 @@ Choose an option from the interactive menu and follow the prompts.
 
 ## 🎯 Learning Focus
 
-This project combines several core Python concepts into one practical application:
-
-- `while` loops
-- `if` / `elif` / `else`
-- User input
-- Reading and writing files
-- Searching text
-- Updating stored data
-
-## 📌 Current Scope
-
-This is a learning-stage command-line project. Future versions could add numbered notes, safer file handling, a better deletion workflow, timestamps, and automated tests.
+This project combines several core Python concepts into one practical application.
 
 ## 👤 Author
 

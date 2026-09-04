@@ -12,6 +12,11 @@ The project processes supported files from the `Input/` directory and classifies
 
 After classification, the file is moved into the matching directory inside `Organized/`.
 
+## 🐍 Requirements
+
+- Python 3.10 or newer
+- A Google Gemini API key
+
 ## 🔄 Workflow
 
 ```text
@@ -56,20 +61,35 @@ Log the Result
 ai_document_organizer/
 ├── Input/
 ├── Organized/
+├── .env.example
 ├── document_organizer.py
-├── document_organizer.log
+├── requirements.txt
 └── README.md
 ```
 
-## ⚙️ Configuration
+## ⚙️ Installation
 
-The project requires a Gemini API key through the `GEMINI_API_KEY` environment variable.
+```bash
+python -m venv .venv
+```
 
-Never commit API keys or other secrets to GitHub.
+Activate the virtual environment and install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## 🔐 Configuration
+
+Copy `.env.example` to `.env` and add your real Gemini API key:
+
+```text
+GEMINI_API_KEY=your_real_api_key
+```
+
+Never commit `.env` or real API keys to GitHub.
 
 ## 🚀 How to Run
-
-Install the required dependencies in your environment, configure `GEMINI_API_KEY`, and run:
 
 ```bash
 python document_organizer.py
@@ -79,7 +99,7 @@ Place supported input files in the `Input/` directory before running the script.
 
 ## 📌 Current Scope
 
-The current implementation is a learning-stage AI automation capstone focused on `.txt` files and three document categories. Future improvements could add more file formats, configurable categories, improved path configuration, tests, and a more modular architecture.
+The current implementation is a learning-stage AI automation capstone focused on `.txt` files and three document categories.
 
 ## 👤 Author
 

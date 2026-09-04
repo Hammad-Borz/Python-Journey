@@ -2,6 +2,11 @@
 
 A menu-driven Python project that combines several simple utilities into one command-line assistant.
 
+## 🐍 Requirements
+
+- Python 3.10 or newer
+- No external packages required
+
 ## ✨ Features
 
 - Basic calculator operations: addition, subtraction, multiplication, and division
@@ -23,8 +28,17 @@ A menu-driven Python project that combines several simple utilities into one com
 ai_assistant_tools/
 ├── ai_assistant_tools.py
 ├── note1.txt
+├── requirements.txt
 └── README.md
 ```
+
+## ⚙️ Installation
+
+```bash
+python -m venv .venv
+```
+
+No third-party dependencies need to be installed.
 
 ## 🚀 How to Run
 
@@ -37,10 +51,6 @@ Follow the on-screen menu and choose an option from 1 to 4.
 ## 📌 Notes
 
 The project uses `note1.txt` as the sample text file for the file-reading and word-counting features.
-
-## 🎯 Learning Focus
-
-This project demonstrates how Python classes, conditional logic, loops, user input, and file handling can be combined into a small interactive application.
 
 ## 👤 Author
 

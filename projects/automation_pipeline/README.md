@@ -2,6 +2,11 @@
 
 A small Python automation pipeline that retrieves data from the GitHub API, extracts selected information, sends that information to Google Gemini for summarization, and saves the AI-generated result to a text file.
 
+## 🐍 Requirements
+
+- Python 3.10 or newer
+- A Google Gemini API key
+
 ## 🔄 Workflow
 
 ```text
@@ -42,20 +47,35 @@ Save Result
 
 ```text
 automation_pipeline/
+├── .env.example
 ├── automation_pipeline.py
-├── ai_result.txt
+├── requirements.txt
 └── README.md
 ```
 
-## ⚙️ Configuration
+## ⚙️ Installation
 
-Set your Gemini API key in the `GEMINI_API_KEY` environment variable before running the project.
+```bash
+python -m venv .venv
+```
 
-Never commit API keys or other secrets to the repository.
+Activate the virtual environment and install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+## 🔐 Configuration
+
+Copy `.env.example` to `.env` and add your Gemini API key:
+
+```text
+GEMINI_API_KEY=your_real_api_key
+```
+
+Never commit `.env` or real API keys to GitHub.
 
 ## 🚀 How to Run
-
-Install the required dependencies and run:
 
 ```bash
 python automation_pipeline.py

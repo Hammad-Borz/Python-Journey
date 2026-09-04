@@ -1,39 +1,58 @@
+import os
+from pathlib import Path
+
 import requests
 from dotenv import load_dotenv
-import os
 from google import genai
 
-# Load Gemini API key from this project's .env file
-load_dotenv()
+GITHUB_API_URL = "https://api.github.com"
+MODEL_NAME = "gemini-2.5-flash"
+OUTPUT_FILE = Path(__file__).parent / "ai_result.txt"
 
-api_key = os.getenv("GEMINI_API_KEY")
 
-print(api_key is not None)
+def get_github_data():
+    response = requests.get(GITHUB_API_URL, timeout=15)
+    response.raise_for_status()
+    data = response.json()
 
-# Get data from GitHub API
-response = requests.get("https://api.github.com")
+    return {
+        "user_url": data["current_user_url"],
+        "repository_search": data["repository_search_url"],
+    }
 
-data = response.json()
 
-# Extract useful information
-print(data["current_user_url"])
-print(data["repository_search_url"])
+def summarize_data(client, data):
+    response = client.models.generate_content(
+        model=MODEL_NAME,
+        contents=f"Briefly summarize this data: {data}",
+    )
+    return response.text
 
-info = {
-    "user_url": data["current_user_url"],
-    "repository_search": data["repository_search_url"]
-}
 
-print(info)
+def main():
+    load_dotenv()
+    api_key = os.getenv("GEMINI_API_KEY")
 
-# Send data to Gemini
-client = genai.Client(api_key=api_key)
+    if not api_key:
+        print("GEMINI_API_KEY is not configured.")
+        return
 
-response = client.models.generate_content(
-    model="gemini-2.5-flash",
-    contents=f"Briefly summarize this data: {info}"
-)
+    try:
+        info = get_github_data()
+        print(info)
 
-print(response.text)
-with open("ai_result.txt", "w", encoding="utf-8") as file:
-    file.write(response.text)
+        client = genai.Client(api_key=api_key)
+        summary = summarize_data(client, info)
+
+        print(summary)
+        OUTPUT_FILE.write_text(summary, encoding="utf-8")
+        print(f"Result saved to: {OUTPUT_FILE.name}")
+
+    except requests.RequestException as error:
+        print(f"GitHub API error: {error}")
+    except Exception as error:
+        print(f"Automation error: {error}")
+
+
+if __name__ == "__main__":
+    main()

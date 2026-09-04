@@ -2,6 +2,11 @@
 
 A beginner-level object-oriented Python project that models a simple bank account with deposit and withdrawal operations.
 
+## 🐍 Requirements
+
+- Python 3.10 or newer
+- No external packages required
+
 ## ✨ Features
 
 - Create an account with an initial balance
@@ -20,8 +25,17 @@ A beginner-level object-oriented Python project that models a simple bank accoun
 ```text
 bank_account_manager/
 ├── bank_account_manager.py
+├── requirements.txt
 └── README.md
 ```
+
+## ⚙️ Installation
+
+```bash
+python -m venv .venv
+```
+
+No third-party dependencies need to be installed.
 
 ## 🚀 How to Run
 
@@ -40,10 +54,6 @@ This project demonstrates:
 - Instance methods
 - Conditional logic
 - Basic state management
-
-## 📌 Current Scope
-
-This is a learning-stage project designed to practice fundamental OOP concepts. Future versions could add multiple accounts, transaction history, input validation, persistent storage, and automated tests.
 
 ## 👤 Author
 
